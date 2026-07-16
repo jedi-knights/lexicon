@@ -76,6 +76,29 @@ func TestCompileDirectory_NestedTree(t *testing.T) {
 	}
 }
 
+func TestCompileDirectory_GaugeTarget(t *testing.T) {
+	// Arrange
+	root := t.TempDir()
+	writeFile(t, root, "a.lex.md", validLexMD)
+	out := t.TempDir()
+
+	// Act
+	stdout, err := runCompile(t, root, "--to", "gauge", "--out", out)
+
+	// Assert
+	if err != nil {
+		t.Fatalf("unexpected error: %v\noutput: %s", err, stdout)
+	}
+	path := filepath.Join(out, "a.spec")
+	content, readErr := os.ReadFile(path)
+	if readErr != nil {
+		t.Fatalf("expected output file %s: %v", path, readErr)
+	}
+	if !bytes.Contains(content, []byte("# X")) {
+		t.Errorf("%s: got %q, want it to contain %q", path, content, "# X")
+	}
+}
+
 func TestCompileDirectory_PartialFailure(t *testing.T) {
 	// Arrange
 	root := t.TempDir()
