@@ -20,8 +20,8 @@ Dev, QA, and Product routinely read the same requirement and walk away with thre
 ## Why lexicon
 
 - **It's just markdown.** A `.lex.md` file is valid CommonMark/GFM — headings, bullet lists, tables, fenced code blocks. It renders correctly with no plugin, on GitHub, in a PR diff, or pasted into Slack.
-- **It's small on purpose.** One heading pattern (`# Feature`, `## Scenario`), one step pattern (`- **Given** ...`). Nothing else to memorize.
-- **The keyword and the concept are separate.** Every step carries both a surface `Keyword` and a resolved `Role` (`precondition`/`action`/`outcome`) — the actual thing that causes Dev/QA/Product to diverge. Write the `Keyword` in whichever of Lexicon's two dialects you prefer — `Given`/`When`/`Then`/`And`/`But` (widely recognized; used by Cucumber, Behave, SpecFlow, and other BDD tools) or `Precondition`/`Action`/`Outcome`/`And`/`But` (dialect-neutral, matching `Role`'s own names) — both resolve to the same `Role`. An LLM (or a human) reading the JSON output gets the concept directly either way.
+- **It's small on purpose.** One heading pattern (`# Feature`, `## Scenario`), one step pattern (`- **Precondition** ...`). Nothing else to memorize.
+- **The keyword and the concept are separate.** Every step carries both a surface `Keyword` and a resolved `Role` (`precondition`/`action`/`outcome`) — the actual thing that causes Dev/QA/Product to diverge. Write the `Keyword` in whichever of Lexicon's two dialects you prefer — `Precondition`/`Action`/`Outcome`/`And`/`But` (dialect-neutral, matching `Role`'s own names, used throughout this README) or `Given`/`When`/`Then`/`And`/`But` (widely recognized; used by Cucumber, Behave, SpecFlow, and other BDD tools) — both resolve to the same `Role`. An LLM (or a human) reading the JSON output gets the concept directly either way.
 - **Targets are an open set, not a hardcoded pair.** Gauge and Gherkin ship first, but adding a new target later (Robot Framework, an in-house format) means writing one new `Emitter` implementation — nothing else in Lexicon changes. See [`internal/adapters/emitter/registry.go`](internal/adapters/emitter/registry.go).
 
 ## The `.lex.md` format
@@ -39,22 +39,22 @@ As a user, I want to page through search results so I can browse more than the f
 
 ## Background
 
-- **Given** the catalog has more than one page of results
+- **Precondition** the catalog has more than one page of results
 
 @search @pagination
 ## Scenario: Navigating to the next page
 
-- **Given** the user has performed a search that returns more than one page of results
-- **When** the user clicks the "Next" pagination control
-- **Then** the second page of results replaces the first page
+- **Precondition** the user has performed a search that returns more than one page of results
+- **Action** the user clicks the "Next" pagination control
+- **Outcome** the second page of results replaces the first page
 - **And** the pagination control shows page 2 as active
 
 @search @pagination
 ## Scenario: Jumping to a specific page
 
-- **Given** the user has performed a search that returns more than one page of results
-- **When** the user clicks the page `<page>` control
-- **Then** the `<page>` page of results replaces the current page
+- **Precondition** the user has performed a search that returns more than one page of results
+- **Action** the user clicks the page `<page>` control
+- **Outcome** the `<page>` page of results replaces the current page
 
 | page |
 | ---- |
@@ -64,10 +64,10 @@ As a user, I want to page through search results so I can browse more than the f
 
 - **One `# Feature: <name>` per file**, with an optional free-text description paragraph directly beneath it.
 - **One or more `## Scenario: <name>` blocks.** A `## Background` block (no `Scenario:` prefix) runs before every other scenario.
-- **Steps are bullets with a bold leading keyword**, in either of two dialects: `- **Given** ...` / `**When**` / `**Then**` / `**And**` / `**But**`, or `- **Precondition** ...` / `**Action**` / `**Outcome**` / `**And**` / `**But**`. Both resolve to the same `Role` and can be mixed freely across scenarios in the same file. Plain CommonMark; renders as a normal list everywhere. For example, the Background step above is equally valid written as:
+- **Steps are bullets with a bold leading keyword**, in either of two dialects: `- **Precondition** ...` / `**Action**` / `**Outcome**` / `**And**` / `**But**` (dialect-neutral, used above), or `- **Given** ...` / `**When**` / `**Then**` / `**And**` / `**But**` (widely recognized BDD phrasing). Both resolve to the same `Role` and can be mixed freely across scenarios in the same file. Plain CommonMark; renders as a normal list everywhere. For example, the Background step above is equally valid written in the BDD dialect as:
 
   ```markdown
-  - **Precondition** the catalog has more than one page of results
+  - **Given** the catalog has more than one page of results
   ```
 - **Tags** are a bare `@tag1 @tag2` line directly above a heading — the only tagging mechanism (front matter is never used for tags, to avoid two parallel ways to do the same thing).
 - **Examples/outline data** is a plain GFM table placed right after a scenario's steps. Its presence — combined with `` `<name>` `` placeholders in step text — implies outline behavior; no separate `Scenario Outline`/`Examples:` heading is needed, since modern Gherkin (v6+) doesn't require one and Gauge never did.
