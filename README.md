@@ -2,7 +2,7 @@
 
 # lexicon
 
-**A markdown-native requirements DSL, translatable to Gherkin, Gauge, and beyond.**
+**A markdown-native requirements DSL, translatable to Gauge, Gherkin, and beyond.**
 
 [![CI](https://github.com/jedi-knights/lexicon/actions/workflows/ci.yml/badge.svg)](https://github.com/jedi-knights/lexicon/actions/workflows/ci.yml)
 [![Release](https://github.com/jedi-knights/lexicon/actions/workflows/release.yml/badge.svg)](https://github.com/jedi-knights/lexicon/actions/workflows/release.yml)
@@ -15,14 +15,14 @@
 
 ---
 
-Dev, QA, and Product routinely read the same requirement and walk away with three different mental models of what's being built — not from carelessness, but because prose leaves three things implicit: the **precondition**, the **action**, and the **outcome**. Gherkin's Given/When/Then is one well-known way to force those three things into the open. Lexicon generalizes the idea: a small, memorable, plain-markdown structure that stays readable on GitHub and Slack with zero special tooling, and compiles deterministically into Gherkin, Gauge, or a schema-stable JSON structure built for LLM consumption.
+Dev, QA, and Product routinely read the same requirement and walk away with three different mental models of what's being built — not from carelessness, but because prose leaves three things implicit: the **precondition**, the **action**, and the **outcome**. Gherkin's Given/When/Then is one well-known way to force those three things into the open. Lexicon generalizes the idea: a small, memorable, plain-markdown structure that stays readable on GitHub and Slack with zero special tooling, and compiles deterministically into Gauge, Gherkin, or a schema-stable JSON structure built for LLM consumption.
 
 ## Why lexicon
 
 - **It's just markdown.** A `.lex.md` file is valid CommonMark/GFM — headings, bullet lists, tables, fenced code blocks. It renders correctly with no plugin, on GitHub, in a PR diff, or pasted into Slack.
 - **It's small on purpose.** One heading pattern (`# Feature`, `## Scenario`), one step pattern (`- **Given** ...`). Nothing else to memorize.
 - **The keyword and the concept are separate.** Every step carries both a surface `Keyword` and a resolved `Role` (`precondition`/`action`/`outcome`) — the actual thing that causes Dev/QA/Product to diverge. Write the `Keyword` in whichever of Lexicon's two dialects you prefer — `Given`/`When`/`Then`/`And`/`But` (widely recognized; used by Cucumber, Behave, SpecFlow, and other BDD tools) or `Precondition`/`Action`/`Outcome`/`And`/`But` (dialect-neutral, matching `Role`'s own names) — both resolve to the same `Role`. An LLM (or a human) reading the JSON output gets the concept directly either way.
-- **Targets are an open set, not a hardcoded pair.** Gherkin and Gauge ship first, but adding a new target later (Robot Framework, an in-house format) means writing one new `Emitter` implementation — nothing else in Lexicon changes. See [`internal/adapters/emitter/registry.go`](internal/adapters/emitter/registry.go).
+- **Targets are an open set, not a hardcoded pair.** Gauge and Gherkin ship first, but adding a new target later (Robot Framework, an in-house format) means writing one new `Emitter` implementation — nothing else in Lexicon changes. See [`internal/adapters/emitter/registry.go`](internal/adapters/emitter/registry.go).
 
 ## The `.lex.md` format
 
@@ -108,11 +108,11 @@ gauge
 gherkin
 json
 
-# Translate to Gherkin
-$ lexicon compile --to gherkin requirements/pagination.lex.md
-
 # Translate to Gauge
 $ lexicon compile --to gauge requirements/pagination.lex.md
+
+# Translate to Gherkin
+$ lexicon compile --to gherkin requirements/pagination.lex.md
 
 # Translate to schema-stable JSON (role/keyword both present, for LLM consumption)
 $ lexicon compile --to json requirements/pagination.lex.md
@@ -149,8 +149,8 @@ Wraps `lexicon check` in CI. See [`action.yml`](action.yml).
 
 Lexicon's core promise — "this is valid, renderable markdown" — is a structural property, not a textual one, so it's fronted by a real CommonMark/GFM engine ([`goldmark`](https://github.com/yuin/goldmark), the same engine under Hugo) rather than a hand-rolled line scanner. Verification is intentionally **asymmetric** across targets:
 
-- **Gherkin fidelity is a real, cheap CI gate**: every emitted `.feature` golden fixture is fed through the real [`cucumber/gherkin`](https://github.com/cucumber/gherkin) library (`ParseGherkinDocument`) and asserted to parse with no error — see [`internal/adapters/emitter/golden_test.go`](internal/adapters/emitter/golden_test.go).
 - **Gauge fidelity is not equally verifiable.** Gauge's Go parser/validation packages are internal to the `gauge` CLI binary, not a stable public library, and pull in gRPC runner infrastructure. Lexicon does not depend on them. Gauge output is verified against hand-authored expected fixtures for v1; a real round-trip through the actual `gauge` binary is a deferred, tracked improvement (see below), not a silent gap.
+- **Gherkin fidelity is a real, cheap CI gate**: every emitted `.feature` golden fixture is fed through the real [`cucumber/gherkin`](https://github.com/cucumber/gherkin) library (`ParseGherkinDocument`) and asserted to parse with no error — see [`internal/adapters/emitter/golden_test.go`](internal/adapters/emitter/golden_test.go).
 
 ## Roadmap / explicitly deferred
 
