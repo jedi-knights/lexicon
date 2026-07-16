@@ -21,7 +21,7 @@ Dev, QA, and Product routinely read the same requirement and walk away with thre
 
 - **It's just markdown.** A `.lex.md` file is valid CommonMark/GFM — headings, bullet lists, tables, fenced code blocks. It renders correctly with no plugin, on GitHub, in a PR diff, or pasted into Slack.
 - **It's small on purpose.** One heading pattern (`# Feature`, `## Scenario`), one step pattern (`- **Given** ...`). Nothing else to memorize.
-- **The keyword and the concept are separate.** Every step carries both a surface `Keyword` (`Given`/`When`/`Then`/`And`/`But` — reused from Gherkin because an already-known vocabulary is the most memorable choice available) and a resolved `Role` (`precondition`/`action`/`outcome`) — the actual thing that causes Dev/QA/Product to diverge. An LLM (or a human) reading the JSON output gets the concept directly, not a BDD convention it has to re-derive from prose.
+- **The keyword and the concept are separate.** Every step carries both a surface `Keyword` and a resolved `Role` (`precondition`/`action`/`outcome`) — the actual thing that causes Dev/QA/Product to diverge. Write the `Keyword` in whichever of Lexicon's two dialects you prefer — `Given`/`When`/`Then`/`And`/`But` (widely recognized; used by Cucumber, Behave, SpecFlow, and other BDD tools) or `Precondition`/`Action`/`Outcome`/`And`/`But` (dialect-neutral, matching `Role`'s own names) — both resolve to the same `Role`. An LLM (or a human) reading the JSON output gets the concept directly either way.
 - **Targets are an open set, not a hardcoded pair.** Gherkin and Gauge ship first, but adding a new target later (Robot Framework, an in-house format) means writing one new `Emitter` implementation — nothing else in Lexicon changes. See [`internal/adapters/emitter/registry.go`](internal/adapters/emitter/registry.go).
 
 ## The `.lex.md` format
@@ -64,7 +64,11 @@ As a user, I want to page through search results so I can browse more than the f
 
 - **One `# Feature: <name>` per file**, with an optional free-text description paragraph directly beneath it.
 - **One or more `## Scenario: <name>` blocks.** A `## Background` block (no `Scenario:` prefix) runs before every other scenario.
-- **Steps are bullets with a bold leading keyword** — `- **Given** ...` / `**When**` / `**Then**` / `**And**` / `**But**`. Plain CommonMark; renders as a normal list everywhere.
+- **Steps are bullets with a bold leading keyword**, in either of two dialects: `- **Given** ...` / `**When**` / `**Then**` / `**And**` / `**But**`, or `- **Precondition** ...` / `**Action**` / `**Outcome**` / `**And**` / `**But**`. Both resolve to the same `Role` and can be mixed freely across scenarios in the same file. Plain CommonMark; renders as a normal list everywhere. For example, the Background step above is equally valid written as:
+
+  ```markdown
+  - **Precondition** the catalog has more than one page of results
+  ```
 - **Tags** are a bare `@tag1 @tag2` line directly above a heading — the only tagging mechanism (front matter is never used for tags, to avoid two parallel ways to do the same thing).
 - **Examples/outline data** is a plain GFM table placed right after a scenario's steps. Its presence — combined with `` `<name>` `` placeholders in step text — implies outline behavior; no separate `Scenario Outline`/`Examples:` heading is needed, since modern Gherkin (v6+) doesn't require one and Gauge never did.
 - **Placeholders must be backtick-escaped** (`` `<page>` ``, not bare `<page>`). This isn't stylistic: a bare `<name>` is inline raw HTML in CommonMark, and GitHub's renderer silently **drops** unrecognized tags — a bare placeholder in an Examples row vanishes when viewed on GitHub. Verified against GitHub's real markdown API, not just goldmark's opinion — see [Verification](#verification).

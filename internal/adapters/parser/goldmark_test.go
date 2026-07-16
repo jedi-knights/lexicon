@@ -74,6 +74,47 @@ func TestParse_RoleInheritance(t *testing.T) {
 	}
 }
 
+func TestParse_NeutralDialect(t *testing.T) {
+	src := `# Feature: X
+
+## Scenario: Y
+
+- **Precondition** a
+- **Action** b
+- **Outcome** c
+`
+	doc := mustParse(t, src)
+	steps := doc.Feature.Scenarios[0].Steps
+	want := []domain.StepRole{domain.RolePrecondition, domain.RoleAction, domain.RoleOutcome}
+	if len(steps) != len(want) {
+		t.Fatalf("got %d steps, want %d", len(steps), len(want))
+	}
+	for i, s := range steps {
+		if s.Role != want[i] {
+			t.Errorf("step %d (%s): Role = %q, want %q", i, s.Keyword, s.Role, want[i])
+		}
+	}
+}
+
+func TestParse_MixedDialectContinuation(t *testing.T) {
+	src := `# Feature: X
+
+## Scenario: Y
+
+- **Precondition** a
+- **And** b
+- **Given** c
+- **And** d
+`
+	doc := mustParse(t, src)
+	steps := doc.Feature.Scenarios[0].Steps
+	for i, s := range steps {
+		if s.Role != domain.RolePrecondition {
+			t.Errorf("step %d (%s): Role = %q, want %q", i, s.Keyword, s.Role, domain.RolePrecondition)
+		}
+	}
+}
+
 func TestParse_QuotedParameters(t *testing.T) {
 	src := `# Feature: X
 

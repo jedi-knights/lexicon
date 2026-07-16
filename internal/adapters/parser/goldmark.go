@@ -29,7 +29,7 @@ var md = goldmark.New(goldmark.WithExtensions(extension.Table))
 
 var (
 	tagLineRe = regexp.MustCompile(`^(@[A-Za-z0-9_-]+)(\s+@[A-Za-z0-9_-]+)*$`)
-	keywordRe = regexp.MustCompile(`^(Given|When|Then|And|But)$`)
+	keywordRe = regexp.MustCompile(`^(Given|When|Then|Precondition|Action|Outcome|And|But)$`)
 	quotedRe  = regexp.MustCompile(`"([^"]*)"`)
 )
 
@@ -213,7 +213,7 @@ func parseStep(li *gast.ListItem, source []byte, lastRole domain.StepRole) (*dom
 	}
 	keyword := strings.TrimSpace(renderText(emph, source))
 	if !keywordRe.MatchString(keyword) {
-		return nil, false, fmt.Errorf("lexicon: %q is not a recognized step keyword (Given, When, Then, And, But)", keyword)
+		return nil, false, fmt.Errorf("lexicon: %q is not a recognized step keyword (Given/When/Then or Precondition/Action/Outcome, plus And/But)", keyword)
 	}
 
 	var rest strings.Builder
@@ -257,11 +257,11 @@ func stepListItemChildren(li *gast.ListItem) (content gast.Node, docString *gast
 
 func roleFor(kw domain.StepKeyword, last domain.StepRole) domain.StepRole {
 	switch kw {
-	case domain.KeywordGiven:
+	case domain.KeywordGiven, domain.KeywordPrecondition:
 		return domain.RolePrecondition
-	case domain.KeywordWhen:
+	case domain.KeywordWhen, domain.KeywordAction:
 		return domain.RoleAction
-	case domain.KeywordThen:
+	case domain.KeywordThen, domain.KeywordOutcome:
 		return domain.RoleOutcome
 	default: // And, But — inherit the role of the step they continue
 		return last

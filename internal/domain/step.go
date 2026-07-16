@@ -1,17 +1,29 @@
 package domain
 
-// StepKeyword is the surface BDD vocabulary a step bullet is written with —
-// reused verbatim from Gherkin because an already-known vocabulary is the
-// most memorable choice available, not because Lexicon is Gherkin-specific.
+// StepKeyword is the surface vocabulary a step bullet is written with.
+// Lexicon supports two equally valid dialects — Given/When/Then/And/But
+// (the most widely recognized phrasing, used by Cucumber, Behave, SpecFlow,
+// and other BDD tools, not just Gherkin) and Precondition/Action/Outcome/
+// And/But (the dialect-neutral spelling, matching StepRole's own names
+// exactly) — chosen freely per file. Both resolve to the same StepRole.
 type StepKeyword string
 
-// The five recognized surface step keywords.
+// The BDD-style dialect.
 const (
 	KeywordGiven StepKeyword = "Given"
 	KeywordWhen  StepKeyword = "When"
 	KeywordThen  StepKeyword = "Then"
 	KeywordAnd   StepKeyword = "And"
 	KeywordBut   StepKeyword = "But"
+)
+
+// The dialect-neutral spelling. And/But are shared with the BDD dialect
+// above rather than duplicated — they're ordinary English connectives, not
+// BDD-specific vocabulary.
+const (
+	KeywordPrecondition StepKeyword = "Precondition"
+	KeywordAction       StepKeyword = "Action"
+	KeywordOutcome      StepKeyword = "Outcome"
 )
 
 // StepRole is the semantic category a step belongs to, independent of which
