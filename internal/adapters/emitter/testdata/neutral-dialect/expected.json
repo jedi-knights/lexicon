@@ -1,0 +1,46 @@
+{
+  "feature": {
+    "name": "Neutral dialect example",
+    "background": {
+      "name": "Background",
+      "steps": [
+        {
+          "keyword": "Precondition",
+          "role": "precondition",
+          "text": "the catalog has more than one page of results"
+        }
+      ],
+      "is_background": true
+    },
+    "scenarios": [
+      {
+        "name": "Neutral steps translate to Gherkin",
+        "steps": [
+          {
+            "keyword": "Precondition",
+            "role": "precondition",
+            "text": "the user has performed a search that returns more than one page of results"
+          },
+          {
+            "keyword": "Action",
+            "role": "action",
+            "text": "the user clicks the \"Next\" pagination control",
+            "parameters": [
+              "Next"
+            ]
+          },
+          {
+            "keyword": "Outcome",
+            "role": "outcome",
+            "text": "the second page of results replaces the first page"
+          },
+          {
+            "keyword": "And",
+            "role": "outcome",
+            "text": "the pagination control shows page 2 as active"
+          }
+        ]
+      }
+    ]
+  }
+}
