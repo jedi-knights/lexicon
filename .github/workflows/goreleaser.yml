@@ -1,14 +1,19 @@
 name: GoReleaser
 
-# Triggered by the v* tag that go-semantic-release pushes during the
-# release workflow. GoReleaser reads the version from the tag, cross-compiles
-# for all supported platforms, packages the archives, and creates the GitHub
-# release with all assets attached.
+# Triggered by the full semver tag (e.g. v0.1.0) that go-semantic-release
+# pushes during the release workflow. GoReleaser reads the version from the
+# tag, cross-compiles for all supported platforms, packages the archives,
+# and creates the GitHub release with all assets attached.
+#
+# The pattern excludes go-semantic-release's rolling major-alias tag
+# (e.g. v0) — that tag points at the same commit as the semver tag, and
+# without this restriction it triggers a second GoReleaser run that tries
+# to re-upload the same release assets and fails with 422 already_exists.
 
 on:
   push:
     tags:
-      - "v*"
+      - "v*.*.*"
 
 permissions:
   contents: write
