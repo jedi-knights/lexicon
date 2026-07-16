@@ -7,7 +7,6 @@
 [![CI](https://github.com/jedi-knights/lexicon/actions/workflows/ci.yml/badge.svg)](https://github.com/jedi-knights/lexicon/actions/workflows/ci.yml)
 [![Release](https://github.com/jedi-knights/lexicon/actions/workflows/release.yml/badge.svg)](https://github.com/jedi-knights/lexicon/actions/workflows/release.yml)
 [![GoReleaser](https://github.com/jedi-knights/lexicon/actions/workflows/goreleaser.yml/badge.svg)](https://github.com/jedi-knights/lexicon/actions/workflows/goreleaser.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/jedi-knights/lexicon)](https://goreportcard.com/report/github.com/jedi-knights/lexicon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [Why](#why-lexicon) · [The format](#the-lexmd-format) · [Installation](#installation) · [Usage](#usage) · [GitHub Action](#github-action) · [Verification](#verification) · [Roadmap](#roadmap--explicitly-deferred) · [Development](#development)
