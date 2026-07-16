@@ -6,6 +6,7 @@ require (
 	github.com/cucumber/gherkin/go/v28 v28.0.0
 	github.com/spf13/cobra v1.10.2
 	github.com/yuin/goldmark v1.8.4
+	golang.org/x/sync v0.10.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

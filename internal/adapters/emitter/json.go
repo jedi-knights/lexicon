@@ -19,6 +19,9 @@ type JSON struct{}
 // Format implements ports.Emitter.
 func (JSON) Format() string { return "json" }
 
+// Extension implements ports.Emitter.
+func (JSON) Extension() string { return ".json" }
+
 // Emit implements ports.Emitter.
 func (JSON) Emit(w io.Writer, doc *domain.Document) error {
 	if doc.Feature == nil {

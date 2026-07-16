@@ -21,6 +21,9 @@ type Gauge struct{}
 // Format implements ports.Emitter.
 func (Gauge) Format() string { return "gauge" }
 
+// Extension implements ports.Emitter.
+func (Gauge) Extension() string { return ".spec" }
+
 // Emit implements ports.Emitter.
 func (Gauge) Emit(w io.Writer, doc *domain.Document) error {
 	f := doc.Feature

@@ -14,4 +14,8 @@ type Emitter interface {
 	// Format is the registry key this Emitter is selected by, e.g. "gherkin".
 	Format() string
 	Emit(w io.Writer, doc *domain.Document) error
+	// Extension is the file extension (including the leading dot, e.g.
+	// ".feature") this Emitter's output conventionally uses. Directory-mode
+	// compilation uses it to name each compiled file.
+	Extension() string
 }
