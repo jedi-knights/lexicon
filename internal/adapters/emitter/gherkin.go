@@ -19,6 +19,9 @@ type Gherkin struct{}
 // Format implements ports.Emitter.
 func (Gherkin) Format() string { return "gherkin" }
 
+// Extension implements ports.Emitter.
+func (Gherkin) Extension() string { return ".feature" }
+
 // Emit implements ports.Emitter.
 func (Gherkin) Emit(w io.Writer, doc *domain.Document) error {
 	f := doc.Feature

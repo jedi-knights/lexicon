@@ -117,6 +117,20 @@ $ lexicon compile --to json requirements/pagination.lex.md
 $ lexicon check requirements/pagination.lex.md
 ```
 
+### Directory compilation
+
+Point `compile` at a directory (or nothing, to default to the current directory) and it recursively compiles every `.lex.md` file it finds, mirroring the input tree under `--out`:
+
+```bash
+# Compile every .lex.md under requirements/ to Gherkin, mirroring structure under gherkin-out/
+lexicon compile requirements --to gherkin --out gherkin-out
+
+# Default to the current directory, cap concurrency at 4 workers
+lexicon compile --to json --out json-out --workers 4
+```
+
+Files compile concurrently (default: one per CPU, override with `--workers`). Every matching file is attempted even if others fail — a failing file's error is printed by relative path and the command exits non-zero, but files that succeeded are still written.
+
 ## GitHub Action
 
 ```yaml
