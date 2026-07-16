@@ -1,0 +1,66 @@
+name: jk-lexicon
+description: Structurally lint .lex.md requirements files with lexicon check.
+author: Jedi Knights
+
+branding:
+  icon: book-open
+  color: purple
+
+inputs:
+  path:
+    description: File or space-separated list of .lex.md files to check
+    required: true
+  fail-on-error:
+    description: Exit non-zero if any finding has error severity
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Download lexicon
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+        ARCH="$(uname -m)"
+        case "$ARCH" in
+          x86_64)          ARCH="amd64" ;;
+          aarch64 | arm64) ARCH="arm64" ;;
+          *) echo "Unsupported architecture: $ARCH" >&2; exit 1 ;;
+        esac
+
+        # Resolve the version to install:
+        #   1. Use the action's own ref when it is a full semver tag (v1.2.3).
+        #   2. Otherwise fall back to the latest release from the GitHub API.
+        VERSION="${GITHUB_ACTION_REF:-}"
+        if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          VERSION="$(curl -fsSL https://api.github.com/repos/jedi-knights/lexicon/releases/latest \
+            | grep '"tag_name"' | cut -d'"' -f4)"
+        fi
+
+        if [ -z "$VERSION" ]; then
+          echo "::error::Failed to resolve lexicon version" >&2
+          exit 1
+        fi
+
+        VER="${VERSION#v}"
+        ARCHIVE="lexicon_${VER}_${OS}_${ARCH}.tar.gz"
+        URL="https://github.com/jedi-knights/lexicon/releases/download/${VERSION}/${ARCHIVE}"
+
+        echo "Downloading lexicon ${VERSION} (${OS}/${ARCH})"
+        curl -fsSL "$URL" | tar -xz -C "$RUNNER_TEMP" lexicon
+        echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+    - name: Run lexicon check
+      shell: bash
+      run: |
+        set -euo pipefail
+        STATUS=0
+        for f in ${{ inputs.path }}; do
+          lexicon check "$f" || STATUS=1
+        done
+        if [ "$STATUS" -ne 0 ] && [ "${{ inputs.fail-on-error }}" = "true" ]; then
+          exit 1
+        fi

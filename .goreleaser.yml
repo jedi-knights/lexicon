@@ -1,0 +1,77 @@
+version: 2
+
+project_name: lexicon
+
+before:
+  hooks:
+    - go mod download
+    - go mod verify
+
+builds:
+  - id: lexicon
+    main: ./cmd/lexicon
+    binary: lexicon
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    flags:
+      - -trimpath
+
+archives:
+  - id: lexicon
+    ids: [lexicon]
+    # lexicon_0.1.0_linux_amd64.tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+brews:
+  - name: lexicon
+    directory: Formula
+    repository:
+      owner: jedi-knights
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    commit_author:
+      name: goreleaser-bot
+      email: goreleaser-bot@users.noreply.github.com
+    homepage: "https://github.com/jedi-knights/lexicon"
+    description: "A markdown-native requirements DSL, translatable to Gherkin, Gauge, and beyond."
+    license: "MIT"
+    install: |
+      bin.install "lexicon"
+    test: |
+      system "#{bin}/lexicon", "version"
+
+# Changelog is managed by go-semantic-release (CHANGELOG.md).
+# GoReleaser's built-in changelog is disabled to avoid duplication.
+changelog:
+  disable: true
+
+release:
+  github:
+    owner: jedi-knights
+    name: lexicon
+  draft: false
+  prerelease: auto
+  name_template: "v{{.Version}}"

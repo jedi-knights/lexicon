@@ -1,0 +1,93 @@
+{
+  "front_matter": {
+    "id": "SEARCH-042",
+    "owner": "product",
+    "status": "draft"
+  },
+  "feature": {
+    "name": "Search results pagination",
+    "description": "As a user, I want to page through search results so I can browse more than the first page of matches.",
+    "background": {
+      "name": "Background",
+      "steps": [
+        {
+          "keyword": "Given",
+          "role": "precondition",
+          "text": "the catalog has more than one page of results"
+        }
+      ],
+      "is_background": true
+    },
+    "scenarios": [
+      {
+        "name": "Navigating to the next page",
+        "tags": [
+          "search",
+          "pagination"
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "role": "precondition",
+            "text": "the user has performed a search that returns more than one page of results"
+          },
+          {
+            "keyword": "When",
+            "role": "action",
+            "text": "the user clicks the \"Next\" pagination control",
+            "parameters": [
+              "Next"
+            ]
+          },
+          {
+            "keyword": "Then",
+            "role": "outcome",
+            "text": "the second page of results replaces the first page"
+          },
+          {
+            "keyword": "And",
+            "role": "outcome",
+            "text": "the pagination control shows page 2 as active"
+          }
+        ]
+      },
+      {
+        "name": "Jumping to a specific page",
+        "tags": [
+          "search",
+          "pagination"
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "role": "precondition",
+            "text": "the user has performed a search that returns more than one page of results"
+          },
+          {
+            "keyword": "When",
+            "role": "action",
+            "text": "the user clicks the page <page> control"
+          },
+          {
+            "keyword": "Then",
+            "role": "outcome",
+            "text": "the <page> page of results replaces the current page"
+          }
+        ],
+        "examples": {
+          "headers": [
+            "page"
+          ],
+          "rows": [
+            [
+              "2"
+            ],
+            [
+              "3"
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

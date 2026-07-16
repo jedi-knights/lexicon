@@ -1,0 +1,24 @@
+# Binaries
+/lexicon
+/lexicon.exe
+dist/
+
+# Coverage output (generated)
+coverage/
+coverage.out
+
+# Go build cache
+*.test
+*.out
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Task tracking (per-session, not for the repo)
+TODO.md

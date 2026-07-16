@@ -1,0 +1,41 @@
+version: "2"
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - gocyclo
+    - revive
+
+  settings:
+    gocyclo:
+      # Flag functions with cyclomatic complexity > 10. kyber uses 7 for its
+      # metric-scoring domain; Lexicon's parser/emitter dispatch functions
+      # (a handful of node-kind or field-name switches) sit naturally in the
+      # 8-10 range without losing clarity from further splitting — raising
+      # the bar here reflects that shape, not a general relaxation.
+      min-complexity: 10
+
+    revive:
+      rules:
+        - name: exported
+          severity: warning
+
+  exclusions:
+    rules:
+      # fmt.Fprint* on a cobra command's OutOrStdout() in CLI code — errors
+      # surface on the next write; inline checking is noise.
+      - linters: [errcheck]
+        path: "cmd/lexicon/"
+        text: "Error return value of `fmt\\.Fprint"
+
+      - linters: [errcheck, gocyclo]
+        path: "_test\\.go"
+
+      - linters: [errcheck, gocyclo, revive, staticcheck, govet]
+        path: "testdata/"
+
+formatters:
+  enable:
+    - goimports
