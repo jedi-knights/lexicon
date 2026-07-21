@@ -162,7 +162,7 @@ Named here on purpose, rather than discovered as a surprise:
 - Step-level data tables (Gherkin's *other* table use, distinct from Examples).
 - Gherkin's `# language:` dialect header — English only for now.
 - A real round-trip smoke test against the actual `gauge` binary.
-- LSP/editor tooling.
+- A real `lexicon` LSP server. In the meantime, see [Editor integration](docs/editor-integration.md) for wiring `lexicon check` into Neovim and VSCode via existing generic-linter tooling.
 
 ## Development
 
