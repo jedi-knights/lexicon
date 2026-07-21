@@ -20,6 +20,7 @@ func init() {
 	register(Gherkin{})
 	register(Gauge{})
 	register(JSON{})
+	register(Robot{})
 }
 
 // Get returns the Emitter registered for format, or false if none is.

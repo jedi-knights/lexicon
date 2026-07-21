@@ -77,13 +77,15 @@ func writeGherkinTags(b *strings.Builder, tags []string, indent string) {
 	fmt.Fprintf(b, "%s%s\n", indent, strings.Join(parts, " "))
 }
 
-// gherkinKeyword returns the Gherkin-valid keyword for s: its own Keyword
-// when that's already native Gherkin vocabulary (preserving an author's
+// bddKeyword returns the Given/When/Then/And/But keyword for s: its own
+// Keyword when that's already native BDD vocabulary (preserving an author's
 // exact Given/When/Then/And/But), or the Given/When/Then equivalent of its
-// Role when the source used the dialect-neutral spelling — Gherkin's
-// grammar requires its own five keywords regardless of which dialect the
-// .lex.md source was written in.
-func gherkinKeyword(s *domain.Step) domain.StepKeyword {
+// Role when the source used the dialect-neutral spelling. Both Gherkin and
+// Robot Framework require this same five-keyword vocabulary — Gherkin's
+// grammar demands it outright, and RF strips the same five prefixes when
+// matching keyword names — regardless of which dialect the .lex.md source
+// was written in.
+func bddKeyword(s *domain.Step) domain.StepKeyword {
 	switch s.Keyword {
 	case domain.KeywordGiven, domain.KeywordWhen, domain.KeywordThen, domain.KeywordAnd, domain.KeywordBut:
 		return s.Keyword
@@ -100,7 +102,7 @@ func gherkinKeyword(s *domain.Step) domain.StepKeyword {
 
 func writeGherkinSteps(b *strings.Builder, steps []*domain.Step, indent string) {
 	for _, s := range steps {
-		fmt.Fprintf(b, "%s%s %s\n", indent, gherkinKeyword(s), s.Text)
+		fmt.Fprintf(b, "%s%s %s\n", indent, bddKeyword(s), s.Text)
 		if s.DocString != nil {
 			fmt.Fprintf(b, "%s  \"\"\"%s\n", indent, s.DocString.ContentType)
 			for _, line := range strings.Split(s.DocString.Content, "\n") {

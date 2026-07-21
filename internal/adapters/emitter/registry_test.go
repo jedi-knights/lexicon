@@ -18,6 +18,7 @@ func TestExtension(t *testing.T) {
 		{format: "gherkin", want: ".feature"},
 		{format: "gauge", want: ".spec"},
 		{format: "json", want: ".json"},
+		{format: "robot", want: ".robot"},
 	}
 
 	for _, tt := range tests {
