@@ -31,6 +31,7 @@ func TestGolden(t *testing.T) {
 		"gherkin": "expected.feature",
 		"gauge":   "expected.spec",
 		"json":    "expected.json",
+		"robot":   "expected.robot",
 	}
 
 	for _, dir := range cases {

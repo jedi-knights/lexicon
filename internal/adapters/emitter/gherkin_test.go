@@ -6,11 +6,12 @@ import (
 	"github.com/jedi-knights/lexicon/internal/domain"
 )
 
-// TestGherkinKeyword locks in the translation from either step-keyword
-// dialect to Gherkin's own required vocabulary: native Gherkin keywords
-// pass through verbatim (preserving an author's exact And/But choice), and
-// the dialect-neutral spelling is translated via Role.
-func TestGherkinKeyword(t *testing.T) {
+// TestBDDKeyword locks in the translation from either step-keyword dialect
+// to the Given/When/Then/And/But vocabulary shared by Gherkin and Robot
+// Framework (RF strips the same five prefixes when matching keyword names):
+// native BDD keywords pass through verbatim (preserving an author's exact
+// And/But choice), and the dialect-neutral spelling is translated via Role.
+func TestBDDKeyword(t *testing.T) {
 	tests := []struct {
 		keyword domain.StepKeyword
 		role    domain.StepRole
@@ -32,7 +33,7 @@ func TestGherkinKeyword(t *testing.T) {
 			step := &domain.Step{Keyword: tt.keyword, Role: tt.role}
 
 			// Act
-			got := gherkinKeyword(step)
+			got := bddKeyword(step)
 
 			// Assert
 			if got != tt.want {
